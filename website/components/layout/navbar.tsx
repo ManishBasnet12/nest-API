@@ -81,8 +81,8 @@ const Navbar = () => {
       useCartStore.setState({ items: [], totalAmount: 0, itemCount: 0 });
     });
 
-  const loadUserCart = (userId: number) => {
-    if (fetchCart) fetchCart(userId);
+  const loadUserCart = (_userId?: number) => {
+    if (fetchCart) fetchCart();
   };
 
   useEffect(() => {
