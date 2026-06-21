@@ -1,4 +1,3 @@
-// src/app/search/page.tsx
 "use client";
 
 import { useEffect, useState, useRef, useCallback, Suspense } from "react";
@@ -9,7 +8,7 @@ import {
   Product,
 } from "../../services/product.service";
 import AddToCartButton from "../../components/ui/AddToCartButton";
-import Link from "next/dist/client/link";
+import Link from "next/link";
 
 function SearchContent() {
   const searchParams = useSearchParams();
