@@ -1,0 +1,188 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+//////////////////////////////////////////////////////
+// ENUMS
+//////////////////////////////////////////////////////
+
+enum RoleName {
+  USER
+  SELLER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+//////////////////////////////////////////////////////
+// AUTH & RBAC
+//////////////////////////////////////////////////////
+
+model User {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique
+  password    String
+  name        String?
+  role        RoleName  @default(USER)
+
+  // relations
+  products    Product[]     @relation("SellerProducts")
+  orders      Order[]
+  reviews     Review[]
+  cartItems   CartItem[]
+  wishlist    Wishlist[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Permission {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+
+  roles RolePermission[]
+}
+
+model RolePermission {
+  id           Int @id @default(autoincrement())
+  role         RoleName
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  permissionId Int
+
+  @@unique([role, permissionId])
+}
+
+//////////////////////////////////////////////////////
+// PRODUCT & CATEGORY
+//////////////////////////////////////////////////////
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  imageUrl  String?
+  products  Product[]
+
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  imageUrl    String?
+  description String?
+  price       Float
+  stock       Int      @default(0)
+
+  seller      User     @relation("SellerProducts", fields: [sellerId], references: [id])
+  sellerId    Int
+
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+
+  reviews     Review[]
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+  wishlist    Wishlist[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+//////////////////////////////////////////////////////
+// CART & WISHLIST
+//////////////////////////////////////////////////////
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  quantity  Int     @default(1)
+
+  @@unique([userId, productId])
+}
+
+model Wishlist {
+  id        Int     @id @default(autoincrement())
+
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@unique([userId, productId])
+}
+
+//////////////////////////////////////////////////////
+// ORDERS
+//////////////////////////////////////////////////////
+
+model Order {
+  id          Int          @id @default(autoincrement())
+  user        User         @relation(fields: [userId], references: [id])
+  userId      Int
+
+  status      OrderStatus  @default(PENDING)
+  totalPrice  Float
+
+  items       OrderItem[]
+
+  createdAt   DateTime @default(now())
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  quantity  Int
+  price     Float   // snapshot price
+}
+
+//////////////////////////////////////////////////////
+// REVIEWS
+//////////////////////////////////////////////////////
+
+model Review {
+  id        Int     @id @default(autoincrement())
+
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  rating    Int
+  comment   String?
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId]) // one review per user per product
+}
