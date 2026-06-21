@@ -45,7 +45,7 @@ async function bootstrap() {
   // CORS Setup
   // -------------------------
   app.enableCors({
-    origin: 'http://localhost:3001',
+    origin: ['http://localhost:3001', 'https://nest-api-sigma.vercel.app'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
