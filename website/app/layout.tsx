@@ -1,10 +1,10 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/layout/navbar";
 import Footer from "../components/layout/footer";
-import Providers from "./providers"; // 🚀 Step 1: Import our custom providers file
+import Providers from "./providers";
+import { Suspense } from "react"; // 🚀 Import Suspense
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +33,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Providers>
-          <Navbar />
+          {/* 🚀 Wrap Navbar in Suspense so useSearchParams does not break static pages like 404 */}
+          <Suspense fallback={<div className="h-20 w-full bg-gray-900 border-b border-gray-100" />}>
+            <Navbar />
+          </Suspense>
           {children}
           <Footer />
         </Providers>
