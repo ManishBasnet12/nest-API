@@ -7,6 +7,7 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import AuthModal from "../../auth/authmodal";
 import CartIcon from "../ui/carticon";
 import { useCartStore } from "../../hooks/useCartStore";
+import Image from "next/image";
 
 interface StoredUser {
   id: number;
@@ -22,7 +23,6 @@ const Navbar = () => {
 
   const [authOpen, setAuthOpen] = useState(false);
   const [user, setUser] = useState<StoredUser | null>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -30,7 +30,7 @@ const Navbar = () => {
   // Local state only — never synced back from URL while user is typing.
   // Initialized once from URL on mount.
   const [searchInput, setSearchInput] = useState(
-    () => searchParams.get("q") || ""
+    () => searchParams.get("q") || "",
   );
 
   // Only reset input when user leaves the search page entirely (logo click etc.)
@@ -140,7 +140,10 @@ const Navbar = () => {
               href="/"
               className="text-[24px] font-medium tracking-tight text-white"
             >
-              STORE
+              <span className="sm:hidden">
+                <Image src="/logo.png" width={100} height={100} alt="Logo" />
+              </span>
+              <span className="hidden sm:inline">STORE</span>
             </Link>
           </div>
 
@@ -221,31 +224,8 @@ const Navbar = () => {
                 Login
               </button>
             )}
-
-            <button
-              onClick={() => setMenuOpen((o) => !o)}
-              className="ml-1 flex h-8 w-8 items-center justify-center rounded-md text-gray-400 transition-colors hover:text-black md:hidden"
-              aria-label="Menu"
-            >
-              {menuOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
           </div>
         </div>
-
-        {menuOpen && (
-          <div className="border-t border-gray-100 bg-white px-5 py-3 md:hidden">
-            {["Shop", "Collections", "About"].map((item) => (
-              <Link
-                key={item}
-                href={`/${item.toLowerCase()}`}
-                onClick={() => setMenuOpen(false)}
-                className="block py-2 text-[13px] text-gray-500 transition-colors hover:text-black"
-              >
-                {item}
-              </Link>
-            ))}
-          </div>
-        )}
       </nav>
 
       <AuthModal

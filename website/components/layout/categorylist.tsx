@@ -23,7 +23,7 @@ export default function CategoryList() {
         </Link>
       </div>
 
-      <div className="no-scrollbar grid grid-flow-col grid-rows-2 gap-2.5 overflow-x-auto pb-1 md:grid-flow-row md:grid-cols-10 md:grid-rows-none">
+      <div className="grid grid-cols-4 gap-2.5 sm:grid-cols-6 md:grid-cols-10">
         {isLoading
           ? Array(20)
               .fill(0)
@@ -38,7 +38,7 @@ function CategoryCard({ cat }: { cat: Category }) {
   return (
     <Link
       href={`/categories/${cat.id}`}
-      className="group flex min-w-[80px] flex-col items-center gap-2 md:min-w-0"
+      className="group flex flex-col items-center gap-2"
     >
       <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-gray-100 bg-gray-50 transition-all duration-200 group-hover:border-gray-300 group-hover:bg-gray-100">
         <Image
