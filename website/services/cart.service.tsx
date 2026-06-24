@@ -23,3 +23,8 @@ export async function syncBackendCart(items: { productId: number; quantity: numb
   const { data } = await api.post("/cart/sync", { items });
   return data;
 }
+
+export async function clearBackendCart() {
+  const { data } = await api.delete("/cart");
+  return data;
+}

@@ -1,9 +1,10 @@
 // website/src/store/useCartStore.ts
 import { create } from "zustand";
-import { 
-  getBackendCart, 
-  addToBackendCart, 
-  removeFromBackendCart 
+import {
+  getBackendCart,
+  addToBackendCart,
+  removeFromBackendCart,
+  clearBackendCart,
 } from "../services/cart.service";
 
 export interface BackendCartItem {
@@ -27,6 +28,7 @@ interface CartState {
   fetchCart: () => Promise<void>;
   addItem: (productId: number, quantity: number) => Promise<void>;
   removeItem: (productId: number) => Promise<void>;
+  clearCart: () => Promise<void>;
   totalPrice: () => number;
   totalItems: () => number;
 }
@@ -39,7 +41,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   fetchCart: async () => {
     try {
       const data = await getBackendCart();
-      
+
       const { items, totalAmount, itemCount } = data || {
         items: [],
         totalAmount: 0,
@@ -71,6 +73,15 @@ export const useCartStore = create<CartState>((set, get) => ({
       await get().fetchCart();
     } catch (error) {
       console.error("Error deleting item from cart table:", error);
+    }
+  },
+
+  clearCart: async () => {
+    try {
+      await clearBackendCart();
+      set({ items: [], totalAmount: 0, itemCount: 0 });
+    } catch (error) {
+      console.error("Error clearing cart:", error);
     }
   },
 

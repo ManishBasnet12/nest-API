@@ -1,4 +1,3 @@
-// create-order.dto.ts
 import { IsArray, IsNumber, IsString, ValidateNested, IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -19,11 +18,27 @@ class OrderItemDto {
 export class CreateOrderDto {
   @IsString()
   @IsNotEmpty()
-  address!: string;
+  fullName!: string;
 
   @IsString()
   @IsNotEmpty()
-  phone!: string;
+  phoneNumber!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  streetAddress!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  city!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  stateRegion!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  postalCode!: string;
 
   @IsArray()
   @ValidateNested({ each: true })

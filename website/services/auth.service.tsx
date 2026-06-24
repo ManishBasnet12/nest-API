@@ -47,6 +47,8 @@ export async function registerUser(payload: RegisterPayload): Promise<RegisterRe
   return data;
 }
 
+
+
 export function persistAuthSession(data: LoginResponse): void {
   localStorage.setItem("access_token", data.access_token);
   localStorage.setItem("user", JSON.stringify(data.user));

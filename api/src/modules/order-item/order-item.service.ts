@@ -5,19 +5,34 @@ import { CreateOrderDto } from './dto/create-order-item.dto';
 @Injectable()
 export class OrdersService {
   constructor(private prisma: PrismaService) {}
-
   async create(createOrderDto: CreateOrderDto, userId: number) {
-    const { items } = createOrderDto;
+    const {
+      items,
+      fullName,
+      phoneNumber,
+      streetAddress,
+      city,
+      stateRegion,
+      postalCode,
+    } = createOrderDto;
 
-    // 1. Calculate the total (variable name can be anything)
-    const calculatedTotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const calculatedTotal = items.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0,
+    );
 
     return this.prisma.order.create({
       data: {
-        totalPrice: calculatedTotal, // MUST match schema: totalPrice
+        totalPrice: calculatedTotal,
         status: 'PENDING',
+        fullName,
+        phoneNumber,
+        streetAddress,
+        city,
+        stateRegion,
+        postalCode,
         user: { connect: { id: userId } },
-        items: {                     // MUST match schema: items
+        items: {
           create: items.map((item) => ({
             product: { connect: { id: item.productId } },
             quantity: item.quantity,
@@ -26,7 +41,7 @@ export class OrdersService {
         },
       },
       include: {
-        items: {                     // MUST match schema: items
+        items: {
           include: { product: true },
         },
       },
@@ -36,7 +51,7 @@ export class OrdersService {
   async findAllByUser(userId: number) {
     return this.prisma.order.findMany({
       where: { userId },
-      include: { items: true },       // MUST match schema: items
+      include: { items: true }, // MUST match schema: items
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -45,7 +60,8 @@ export class OrdersService {
     const order = await this.prisma.order.findUnique({
       where: { id },
       include: {
-        items: {                     // MUST match schema: items
+        items: {
+          // MUST match schema: items
           include: { product: true },
         },
       },
