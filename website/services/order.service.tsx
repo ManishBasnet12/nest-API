@@ -35,6 +35,11 @@ export interface Order {
   userId: number;
   items: OrderItem[];
   createdAt: string;
+  fullName: string;
+  streetAddress: string;
+  city: string;
+  stateRegion: string;
+  postalCode: string;
 }
 
 export async function createOrder(payload: CreateOrderPayload): Promise<Order> {
