@@ -26,14 +26,10 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // ─── Search ────────────────────────────────────────────────────────────────
-  // Local state only — never synced back from URL while user is typing.
-  // Initialized once from URL on mount.
   const [searchInput, setSearchInput] = useState(
     () => searchParams.get("q") || "",
   );
 
-  // Only reset input when user leaves the search page entirely (logo click etc.)
   const prevPathRef = useRef(pathname);
   useEffect(() => {
     if (prevPathRef.current === "/search" && pathname !== "/search") {
@@ -47,10 +43,8 @@ const Navbar = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
 
-    // Update input immediately — no URL involvement here
     setSearchInput(val);
 
-    // Cancel any pending push
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(() => {
@@ -65,7 +59,6 @@ const Navbar = () => {
     }, 350);
   };
 
-  // Cleanup debounce on unmount
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -133,22 +126,21 @@ const Navbar = () => {
   return (
     <>
       <nav className="sticky top-0 z-50 w-full h-20 border-b border-gray-100 bg-gray-900 backdrop-blur-md">
-        <div className="mx-auto flex h-full max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-full max-w-[1400px] items-center justify-between  px-4  lg:px-8">
           {/* Logo */}
-          <div className="flex items-center gap-8">
+          <div className=" flex items-center gap-8">
             <Link
               href="/"
               className="text-[24px] font-medium tracking-tight text-white"
             >
-              <span className="sm:hidden">
+              <span className=" w-[50px] block sm:hidden">
                 <Image src="/logo.png" width={100} height={100} alt="Logo" />
               </span>
               <span className="hidden sm:inline">STORE</span>
             </Link>
           </div>
 
-          {/* Search */}
-          <div className="w-[stretch] h-12 relative flex items-center mx-10 group">
+          <div className="w-[stretch] h-12 relative flex items-center mx-[10px] group">
             <input
               type="text"
               value={searchInput}
@@ -171,18 +163,17 @@ const Navbar = () => {
             </svg>
           </div>
 
-          {/* Right */}
-          <div className="w-[270px]! flex items-center gap-1">
+          <div className="lg:w-[270px]! flex items-center gap-1">
             <CartIcon />
 
             {user ? (
               <div ref={dropdownRef} className="relative ml-4">
                 <button
                   onClick={() => setDropdownOpen((o) => !o)}
-                  className="flex h-8 items-center gap-2 rounded-full border border-gray-200 bg-white pl-1 pr-3 text-[13px] font-medium text-black transition-colors"
+                  className="flex h-8 items-center sm:w-5 md:w-full md:p-2 gap-2 rounded-full border border-gray-200 bg-white px-1 text-[13px] font-medium text-black transition-colors"
                   aria-label="Account menu"
                 >
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-[11px] font-medium text-white">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-[22px] font-medium text-white">
                     {firstLetter}
                   </span>
                   <span className="hidden sm:block">{user.name}</span>
@@ -198,10 +189,23 @@ const Navbar = () => {
                         {user.email}
                       </p>
                     </div>
-                    <DropdownItem href="/account">My account</DropdownItem>
-                    <DropdownItem href="/orders">Orders</DropdownItem>
+                    <DropdownItem
+                      href="/account"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      My account
+                    </DropdownItem>
+                    <DropdownItem
+                      href="/account/orders"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      Orders
+                    </DropdownItem>
                     {user.role === "SELLER" && (
-                      <DropdownItem href="/seller/dashboard">
+                      <DropdownItem
+                        href="/seller/dashboard"
+                        onClick={() => setDropdownOpen(false)}
+                      >
                         Seller dashboard
                       </DropdownItem>
                     )}
@@ -246,13 +250,16 @@ const Navbar = () => {
 
 const DropdownItem = ({
   href,
+  onClick,
   children,
 }: {
   href: string;
+  onClick?: () => void;
   children: React.ReactNode;
 }) => (
   <Link
     href={href}
+    onClick={onClick}
     className="block px-3 py-1.5 text-[13px] text-gray-600 transition-colors hover:bg-gray-50 hover:text-black"
   >
     {children}
