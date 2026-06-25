@@ -50,7 +50,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-56 shrink-0 sticky top-24">
+    <aside className=" sm:block w-56 shrink-0 sticky top-24 hidden">
       <nav className="flex flex-col gap-0.5">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
@@ -69,7 +69,9 @@ export default function Sidebar() {
                 size={15}
                 strokeWidth={1.5}
                 className={`shrink-0 transition-colors ${
-                  isActive ? "text-white" : "text-gray-400 group-hover:text-black"
+                  isActive
+                    ? "text-white"
+                    : "text-gray-400 group-hover:text-black"
                 }`}
               />
               <span className="font-light">{item.label}</span>
