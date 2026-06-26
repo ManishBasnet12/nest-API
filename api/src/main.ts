@@ -3,10 +3,10 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import express from 'express';
+import express = require('express');
 
-let app: INestApplication;
 const server = express();
+let app: INestApplication;
 
 async function bootstrap() {
   if (!app) {
@@ -40,7 +40,7 @@ async function bootstrap() {
     );
 
     app.enableCors({
-      origin: ['https://nest-api-sigma.vercel.app/', 'http://localhost:3000'],
+      origin: ['https://nest-api-sigma.vercel.app', 'http://localhost:3000'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       credentials: true,
     });
@@ -49,8 +49,8 @@ async function bootstrap() {
   }
   return server;
 }
-// at the bottom of main.ts — replace your current export
-export default async function handler(req: any, res: any) {
+
+module.exports = async (req: any, res: any) => {
   const expressApp = await bootstrap();
   expressApp(req, res);
-}
+};
