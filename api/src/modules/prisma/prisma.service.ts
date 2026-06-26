@@ -1,16 +1,16 @@
+// src/modules/prisma/prisma.service.ts
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from '../../../generated/prisma/client';
+import { PrismaClient } from '../../../generated/prisma/client'; // Maps to your schema output directory
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 
-// Prevent multiple instances in development/serverless hot-reloads
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
   constructor() {
     if (globalForPrisma.prisma) {
-      // If an instance already exists, copy internal configuration
+      // Pass an empty config argument to satisfy the base constructor before returning early
       super({} as any);
       return globalForPrisma.prisma as any;
     }
@@ -18,7 +18,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     const connectionString = process.env.DATABASE_URL;
     const poolOptions: any = {
       connectionString,
-      max: parseInt(process.env.DB_POOL_SIZE || '2', 10), // Low pool size for serverless
+      // Small footprint pooling configuration vital for Vercel/Serverless lambda limitations
+      max: parseInt(process.env.DB_POOL_SIZE || '2', 10),
       idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT || '15000', 10),
     };
     
@@ -29,6 +30,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     const pool = new Pool(poolOptions);
     const adapter = new PrismaPg(pool);
 
+    // Initializing standard driver configurations inside the options argument
     super({
       adapter,
       log: ['error', 'warn'],
