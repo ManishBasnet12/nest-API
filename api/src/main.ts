@@ -1,66 +1,25 @@
-import 'dotenv/config';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
-import { ExpressAdapter } from '@nestjs/platform-express';
+import { NestFactory } from "@nestjs/core";
+import { INestApplication } from "@nestjs/common";
+import { AppModule } from "./app.module";
 
-import express from 'express';
-
-// 1. Create an Express instance
-const expressApp = express();
+let app: INestApplication;
 
 async function bootstrap() {
-  // 2. Pass the Express instance to NestJS
-  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+  if (!app) {
+    app = await NestFactory.create(AppModule);
 
-  // -------------------------
-  // Swagger Configuration
-  // -------------------------
-  const config = new DocumentBuilder()
-    .setTitle('API')
-    .setDescription('The API for the project')
-    .setVersion('1.0')
-    .addTag('api')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        description: 'Enter JWT token only (without Bearer prefix)',
-      },
-      'access-token', 
-    )
-    .build();
+    app.enableCors({
+      origin: [
+        "https://vercel.com/manish-basnets-projects/nest-api",
+        "http://localhost:3000",
+      ],
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+      credentials: true,
+    });
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
-
-  // -------------------------
-  // Global Validation Pipe
-  // -------------------------
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
-
-  // -------------------------
-  // CORS Setup
-  // -------------------------
-  app.enableCors({
-    origin: ['http://localhost:3001', 'https://nest-api-sigma.vercel.app'],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
-
-  // 3. Initialize the app instead of listening on a port
-  await app.init();
+    await app.init();
+  }
+  return app.getHttpAdapter().getInstance();
 }
 
-bootstrap();
-
-// 4. Export the Express app for Vercel's serverless environment
-export default expressApp;
+export default bootstrap();
