@@ -3,9 +3,16 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { ExpressAdapter } from '@nestjs/platform-express';
+
+import express from 'express';
+
+// 1. Create an Express instance
+const expressApp = express();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // 2. Pass the Express instance to NestJS
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
 
   // -------------------------
   // Swagger Configuration
@@ -22,12 +29,11 @@ async function bootstrap() {
         bearerFormat: 'JWT',
         description: 'Enter JWT token only (without Bearer prefix)',
       },
-      'access-token', // This name is used in @ApiBearerAuth()
+      'access-token', 
     )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-
   SwaggerModule.setup('api', app, document);
 
   // -------------------------
@@ -50,13 +56,11 @@ async function bootstrap() {
     credentials: true,
   });
 
-  // -------------------------
-  // Start Server
-  // -------------------------
-  const port = process.env.PORT ?? 3000;
-  await app.listen(port);
-
-  console.log(`Server running on http://localhost:${port}`);
+  // 3. Initialize the app instead of listening on a port
+  await app.init();
 }
 
 bootstrap();
+
+// 4. Export the Express app for Vercel's serverless environment
+export default expressApp;
