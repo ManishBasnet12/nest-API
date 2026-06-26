@@ -3,7 +3,9 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import express = require('express');
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const express = require('express');
 
 const server = express();
 let app: INestApplication;
@@ -50,6 +52,7 @@ async function bootstrap() {
   return server;
 }
 
+// CommonJS export for Vercel
 module.exports = async (req: any, res: any) => {
   const expressApp = await bootstrap();
   expressApp(req, res);

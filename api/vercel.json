@@ -5,14 +5,20 @@
       "src": "dist/main.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["generated/**", "prisma/**"]
+        "includeFiles": [
+          "dist/**",
+          "generated/**",
+          "prisma/**",
+          "node_modules/.prisma/**",
+          "node_modules/@prisma/**"
+        ]
       }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "dist/main.js"
+      "dest": "/dist/main.js"
     }
   ]
 }
