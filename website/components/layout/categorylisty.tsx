@@ -48,9 +48,9 @@ export default function CategorySidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="  sticky top-0 flex h-screen w-64 flex-shrink-0 flex-col border-r border-gray-200 bg-white">
+    <aside className="  sticky top-0 flex h-screen sm:w-64 w-[130px] flex-shrink-0 flex-col border-r border-gray-200 bg-white">
       {/* Sidebar Header */}
-      <div className="flex items-baseline justify-between border-b border-gray-100 p-4">
+      <div className=" sm:flex block items-baseline justify-between border-b border-gray-100 p-4">
         <h2 className="text-[14px] font-semibold tracking-wide text-black uppercase">
           Categories
         </h2>
@@ -85,7 +85,7 @@ function CategoryRow({ cat, isActive }: { cat: Category; isActive: boolean }) {
   return (
     <Link
       href={`/categories/${cat.id}`}
-      className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200 ${
+      className={`group flex sm:flex-row w-full flex-col  items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200 ${
         isActive
           ? "bg-black text-white font-medium shadow-sm"
           : "text-gray-600 hover:bg-gray-50 hover:text-black"
@@ -104,7 +104,7 @@ function CategoryRow({ cat, isActive }: { cat: Category; isActive: boolean }) {
         />
       </div>
 
-      <span className="line-clamp-1 text-[13px]">
+      <span className="line-clamp-1 text-[13px] inline-block  text-center text-center">
         {cat.name}
       </span>
     </Link>
