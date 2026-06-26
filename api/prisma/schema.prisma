@@ -1,13 +1,11 @@
-// prisma/schema.prisma
-
 generator client {
-  provider        = "prisma-client" // Upgraded for Prisma 7 Rust-free client
+  provider        = "prisma-client"
   output          = "../generated/prisma"
   previewFeatures = ["fullTextSearchPostgres"]
 }
 
 datasource db {
-  provider = "postgresql" // No URL assigned here anymore (handled in prisma.config.ts)
+  provider = "postgresql"
 }
 
 model User {
