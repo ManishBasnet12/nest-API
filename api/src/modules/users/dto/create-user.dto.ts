@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsString, IsEnum, IsOptional } from "class-validator";
-import { RoleName } from '../../../../generated/prisma/enums';
-import type { RoleName as RoleNameType } from '../../../../generated/prisma/enums';
+import { RoleName } from '../../../generated/prisma/enums';
+import type { RoleName as RoleNameType } from '../../../generated/prisma/enums';
 
 export class CreateUserDto {
 
