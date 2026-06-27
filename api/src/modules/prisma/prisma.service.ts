@@ -1,6 +1,6 @@
 // src/prisma/prisma.service.ts
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client/extension';
+import { PrismaClient } from 'generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 
@@ -14,8 +14,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
     const pool = new Pool({
       connectionString,
-      max: parseInt(process.env.DB_POOL_SIZE || '1', 10),
-      idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT || '3000', 10),
+      max: parseInt(process.env.DB_POOL_SIZE || '10', 10),
+      idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT || '30000', 10),
       connectionTimeoutMillis: 5000,
     });
 
