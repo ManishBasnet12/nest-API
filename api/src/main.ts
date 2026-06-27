@@ -51,7 +51,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      'https://your-frontend-url.vercel.app',
+      'https://nest-api-sigma.vercel.app',
       'http://localhost:3000',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
