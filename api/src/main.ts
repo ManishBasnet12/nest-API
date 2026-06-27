@@ -1,4 +1,8 @@
-// src/main.ts
+import { register } from 'tsconfig-paths';
+register({
+  baseUrl: __dirname,
+  paths: { 'src/*': ['./*'] }
+});
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
