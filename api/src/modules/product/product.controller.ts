@@ -8,9 +8,9 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { JwtAuthGuard } from '../users/guards/jwt-auth-guards';
-import { RolesGuard } from 'src/common/role/roles.guard';
+import { RolesGuard } from '../../common/role/roles.guard';
 import { Public } from '../users/decotators/public.decorator';
-import { Roles } from 'src/common/role/roles.decorator';
+import { Roles } from '../../common/role/roles.decorator';
 import { ProductQueryDto } from './dto/pagination.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)

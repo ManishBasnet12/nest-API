@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { ProductQueryDto } from './dto/pagination.dto';
-import { CloudinaryService } from 'src/shared/upload/upload.service';
+import { CloudinaryService } from '../../shared/upload/upload.service';
 
 @Injectable()
 export class ProductService {

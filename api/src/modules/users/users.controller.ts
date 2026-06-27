@@ -12,8 +12,8 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Roles } from 'src/common/role/roles.decorator';
-import { RolesGuard } from 'src/common/role/roles.guard';
+import { Roles } from '../../common/role/roles.decorator';
+import { RolesGuard } from '../../common/role/roles.guard';
 import { JwtAuthGuard } from './guards/jwt-auth-guards'; // Use your new custom guard
 import { Public } from './decotators/public.decorator';
 import { LoginUserDto } from './dto/login-user.dto';

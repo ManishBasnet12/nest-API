@@ -8,8 +8,8 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Public } from '../users/decotators/public.decorator';
 import { JwtAuthGuard } from '../users/guards/jwt-auth-guards';
-import { Roles } from 'src/common/role/roles.decorator';
-import { RolesGuard } from 'src/common/role/roles.guard';
+import { Roles } from '../../common/role/roles.decorator';
+import { RolesGuard } from '../../common/role/roles.guard';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('category')
