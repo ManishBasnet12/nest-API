@@ -1,11 +1,10 @@
+// src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExpressAdapter } from '@nestjs/platform-express';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const express = require('express');
+import express from 'express';
 
 const server = express();
 let app: INestApplication;
@@ -18,7 +17,6 @@ async function bootstrap() {
       .setTitle('API')
       .setDescription('The API for the project')
       .setVersion('1.0')
-      .addTag('api')
       .addBearerAuth(
         {
           type: 'http',
@@ -42,18 +40,28 @@ async function bootstrap() {
     );
 
     app.enableCors({
-      origin: ['https://nest-api-sigma.vercel.app', 'http://localhost:3000'],
+      origin: ['https://your-frontend-url.vercel.app', 'http://localhost:3000'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       credentials: true,
     });
 
     await app.init();
   }
-  return server;
+  return app.getHttpAdapter().getInstance();
 }
 
-// CommonJS export for Vercel
-module.exports = async (req: any, res: any) => {
+// For Vercel serverless function
+export default async function handler(req: any, res: any) {
   const expressApp = await bootstrap();
   expressApp(req, res);
-};
+}
+
+// For local development
+if (!process.env.VERCEL) {
+  async function startLocal() {
+    const app = await NestFactory.create(AppModule);
+    // ... same configuration
+    await app.listen(3000);
+  }
+  startLocal();
+}
