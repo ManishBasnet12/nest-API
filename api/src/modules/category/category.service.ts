@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { CloudinaryService } from 'src/shared/upload/upload.service';
+import { CloudinaryService } from '../../shared/upload/upload.service';
 
 @Injectable()
 export class CategoryService {
