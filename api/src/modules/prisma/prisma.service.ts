@@ -6,27 +6,28 @@ import { Pool } from 'pg';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
-  private static instance: PrismaService;
-
   constructor() {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) {
       throw new Error('DATABASE_URL environment variable is not set');
     }
 
-    // For serverless, use connection pooling
+    // For Prisma 7 with PrismaPg adapter
     const pool = new Pool({
       connectionString,
-      max: parseInt(process.env.DB_POOL_SIZE || '1', 10), // Lower for serverless
+      max: parseInt(process.env.DB_POOL_SIZE || '1', 10),
       idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT || '3000', 10),
       connectionTimeoutMillis: 5000,
     });
 
     const adapter = new PrismaPg(pool);
-    super({ 
-      adapter, 
-      log: process.env.NODE_ENV === 'development' ? ['error', 'warn', 'info'] : ['error'] 
-    } as any);
+    
+    super({
+      adapter,
+      log: process.env.NODE_ENV === 'development' 
+        ? ['query', 'info', 'warn', 'error'] 
+        : ['error'],
+    });
   }
 
   async onModuleInit() {
