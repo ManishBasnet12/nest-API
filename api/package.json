@@ -6,7 +6,6 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prebuild": "rimraf dist",
     "build": "prisma generate && npx @nestjs/cli build",
     "start": "nest start",
     "vercel-build": "prisma generate && npm run build",
