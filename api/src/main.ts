@@ -13,10 +13,7 @@ async function bootstrap() {
     return cachedApp;
   }
 
-  const app = await NestFactory.create(
-    AppModule,
-    new ExpressAdapter(server),
-  );
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
   const config = new DocumentBuilder()
     .setTitle('API')
@@ -43,18 +40,15 @@ async function bootstrap() {
       transform: true,
     }),
   );
-
   app.enableCors({
-    origin: [
-      'https://nest-api-sigma.vercel.app',
-      'http://localhost:3000',
-    ],
+    origin: ['https://nest-api-sigma.vercel.app', 'http://localhost:3000'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
+    allowedHeaders: 'Content-Type, Accept, Authorization, X-Requested-With',
   });
 
   await app.init();
-  
+
   const expressApp = app.getHttpAdapter().getInstance();
   cachedApp = expressApp;
   return expressApp;
@@ -75,7 +69,7 @@ export default async function handler(req: any, res: any) {
 if (!process.env.VERCEL) {
   async function startLocal() {
     const app = await NestFactory.create(AppModule);
-    
+
     const config = new DocumentBuilder()
       .setTitle('API')
       .setDescription('The API for the project')
