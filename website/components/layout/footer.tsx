@@ -6,7 +6,6 @@ const Footer = () => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
           
-          {/* Brand Section */}
           <div className="col-span-2">
             <h2 className="text-lg font-bold mb-4">STORE.</h2>
             <p className="text-sm text-gray-500 max-w-xs leading-relaxed">
@@ -15,7 +14,6 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* Categories Section */}
           <div>
             <h3 className="text-sm font-semibold text-black mb-4">Shop</h3>
             <ul className="space-y-2 text-sm text-gray-500">
@@ -25,7 +23,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Account Section */}
           <div>
             <h3 className="text-sm font-semibold text-black mb-4">Support</h3>
             <ul className="space-y-2 text-sm text-gray-500">
@@ -35,7 +32,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Legal Section */}
           <div>
             <h3 className="text-sm font-semibold text-black mb-4">Legal</h3>
             <ul className="space-y-2 text-sm text-gray-500">
@@ -45,13 +41,11 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-gray-400">
             © 2026 YourBrand. Powered by NestJS & Next.js.
           </p>
           <div className="flex gap-6">
-             {/* Social Links would go here */}
              <div className="h-4 w-4 bg-gray-300 rounded-full"></div>
              <div className="h-4 w-4 bg-gray-300 rounded-full"></div>
           </div>

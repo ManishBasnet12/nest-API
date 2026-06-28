@@ -1,4 +1,3 @@
-// website/src/components/shared/productCard.tsx
 "use client";
 
 import Link from "next/link";
@@ -19,7 +18,7 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const productImage = product.imageUrl || "/images/placeholder.jpg";
+  const productImage = product.imageUrl;
 
   const formatPrice = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -30,7 +29,6 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div className="group relative flex w-[180px] flex-col overflow-hidden bg-white  md:w-[220px]">
-      {/* Product Image Link */}
       <Link href={`/products/${product.id}`} className="relative  w-full aspect-square overflow-hidden  bg-gray-50 ">
         <Image
           src={productImage || "/dummy.png"}
@@ -42,7 +40,6 @@ export default function ProductCard({ product }: ProductCardProps) {
         />
       </Link>
 
-      {/* Product Info */}
       <div className="mt-3 flex flex-1 flex-col justify-between">
         <div>
           {product.category && (
@@ -57,13 +54,11 @@ export default function ProductCard({ product }: ProductCardProps) {
           </Link>
         </div>
 
-        {/* Price & Add to Cart Action */}
         <div className="mt-3 flex items-center justify-between">
           <span className="text-sm font-bold text-gray-900 md:text-base">
             {formatPrice(product.price)}
           </span>
           
-          {/* Your updated, intercept-capable button */}
           <AddToCartButton productId={product.id} />
         </div>
       </div>

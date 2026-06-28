@@ -60,7 +60,6 @@ export default function OrderCard({ order }: { order: OrderType }) {
 
   return (
     <div className="border border-gray-100 rounded-xl p-6 space-y-5">
-      {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
           <p className="font-display italic text-base text-gray-900">
@@ -73,7 +72,6 @@ export default function OrderCard({ order }: { order: OrderType }) {
         <StatusBadge status={order.status as OrderStatus} />
       </div>
 
-      {/* Items */}
       <div className="divide-y divide-gray-100">
         {order.items.map((item) => (
           <div
@@ -103,7 +101,6 @@ export default function OrderCard({ order }: { order: OrderType }) {
         ))}
       </div>
 
-      {/* Footer: address + total */}
       <div className="flex items-end justify-between border-t border-gray-100 pt-4">
         <div className="text-xs text-gray-400 font-light max-w-[60%]">
           <p className="font-medium text-gray-600">{order.fullName}</p>

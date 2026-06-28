@@ -64,7 +64,6 @@ const Navbar = () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, []);
-  // ──────────────────────────────────────────────────────────────────────────
 
   const fetchCart = useCartStore((s) => s.fetchCart);
   const storeClearCart = useCartStore((s) => (s as any).clearCart);
