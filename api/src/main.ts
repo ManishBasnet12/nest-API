@@ -5,15 +5,20 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import express from 'express';
 
-const server = express();
-let cachedApp: any;
+// Only cache the fully initialized server
+let cachedServer: any;
 
 async function bootstrap() {
-  if (cachedApp) {
-    return cachedApp;
+  if (cachedServer) {
+    return cachedServer;
   }
 
-  const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+  // 1. Create a fresh express instance INSIDE the bootstrap function
+  const expressApp = express();
+  const app = await NestFactory.create(
+    AppModule,
+    new ExpressAdapter(expressApp),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('API')
@@ -40,6 +45,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
   app.enableCors({
     origin: ['https://nest-api-sigma.vercel.app', 'http://localhost:3000'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -49,16 +55,16 @@ async function bootstrap() {
 
   await app.init();
 
-  const expressApp = app.getHttpAdapter().getInstance();
-  cachedApp = expressApp;
-  return expressApp;
+  // 2. Cache the initialized instance
+  cachedServer = expressApp;
+  return cachedServer;
 }
 
 // For Vercel serverless function
 export default async function handler(req: any, res: any) {
   try {
     const app = await bootstrap();
-    app(req, res);
+    return app(req, res); // Ensure we return the executing app
   } catch (error) {
     console.error('Error in handler:', error);
     res.status(500).json({ error: 'Internal Server Error' });
