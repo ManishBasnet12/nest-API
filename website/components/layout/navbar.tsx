@@ -65,17 +65,7 @@ const Navbar = () => {
     };
   }, []);
 
-  const fetchCart = useCartStore((s) => s.fetchCart);
-  const storeClearCart = useCartStore((s) => (s as any).clearCart);
-  const clearCart =
-    storeClearCart ||
-    (() => {
-      useCartStore.setState({ items: [], totalAmount: 0, itemCount: 0 });
-    });
-
-  const loadUserCart = (_userId?: number) => {
-    if (fetchCart) fetchCart();
-  };
+  const clearCart = useCartStore((s) => s.clearCart);
 
   useEffect(() => {
     const syncUser = () => {
@@ -84,7 +74,6 @@ const Navbar = () => {
         try {
           const parsedUser = JSON.parse(stored);
           setUser(parsedUser);
-          loadUserCart(parsedUser.id);
         } catch {
           localStorage.removeItem("user");
           setUser(null);
@@ -97,7 +86,7 @@ const Navbar = () => {
     syncUser();
     window.addEventListener("auth_change", syncUser);
     return () => window.removeEventListener("auth_change", syncUser);
-  }, [fetchCart]);
+  }, []);
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -235,13 +224,6 @@ const Navbar = () => {
         isOpen={authOpen}
         onClose={() => setAuthOpen(false)}
         defaultTab="login"
-        onLoginSuccess={() => {
-          const stored = localStorage.getItem("user");
-          if (stored) {
-            const parsedUser = JSON.parse(stored);
-            loadUserCart(parsedUser.id);
-          }
-        }}
       />
     </>
   );

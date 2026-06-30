@@ -3,6 +3,7 @@ import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query
 import { CATEGORIES_QUERY_KEY } from "../hooks/useCategories";
 import { getCategories } from "../services/category.service";
 import HomeClientContainer from "./home-client-container";
+import ViewCartBar from "@/components/layout/cartbar";
 
 export default async function Home() {
   const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ export default async function Home() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <HomeClientContainer />
+      <ViewCartBar />
     </HydrationBoundary>
   );
 }

@@ -41,3 +41,8 @@ export const getProductById = async (id: string) => {
   const { data } = await api.get(`/product/${id}`);
   return data;
 };
+
+export const getAllProducts = async () => {
+  const { data } = await api.get("/product");
+  return data?.data || [];
+}

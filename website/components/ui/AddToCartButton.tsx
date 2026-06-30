@@ -1,47 +1,33 @@
 "use client";
 
-import { useCartStore } from "../../hooks/useCartStore";
+import { useCartStore, CartProduct } from "../../hooks/useCartStore";
 import { useState } from "react";
 import AuthModal from "../../auth/authmodal";
 import { Plus, Minus } from "lucide-react";
+import { getToken } from "../../services/auth.service";
 
-export default function AddToCartButton({ productId }: { productId: number }) {
+export default function AddToCartButton({ product }: { product: CartProduct }) {
   const addItem = useCartStore((state) => state.addItem);
   const cartItem = useCartStore((state) =>
-    state.items.find((item: any) => item.productId === productId),
+    state.items.find((item) => item.productId === product.id),
   );
 
   const currentQuantity = cartItem?.quantity || 0;
 
   const [authOpen, setAuthOpen] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [pendingAction, setPendingAction] = useState<
-    "increment" | "decrement" | null
-  >(null);
+  const [pendingAction, setPendingAction] = useState<"increment" | "decrement" | null>(null);
 
-  const executeQuantityChange = async (
-    targetAction: "increment" | "decrement",
-  ) => {
-    setIsProcessing(true);
-    try {
-      if (targetAction === "increment") {
-        await addItem(productId, 1);
-      } else if (targetAction === "decrement" && currentQuantity > 0) {
-        await addItem(productId, -1);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsProcessing(false);
-      setPendingAction(null);
+  const executeQuantityChange = (action: "increment" | "decrement") => {
+    if (action === "increment") {
+      addItem(product, 1);
+    } else if (action === "decrement" && currentQuantity > 0) {
+      addItem(product, -1);
     }
+    setPendingAction(null);
   };
 
   const handleActionClick = (action: "increment" | "decrement") => {
-    const token =
-      typeof window !== "undefined"
-        ? localStorage.getItem("access_token")
-        : null;
+    const token = getToken();
 
     if (!token) {
       setPendingAction(action);
@@ -58,19 +44,15 @@ export default function AddToCartButton({ productId }: { productId: number }) {
         {currentQuantity === 0 ? (
           <button
             onClick={() => handleActionClick("increment")}
-            disabled={isProcessing}
-            className="rounded border border-green-600 px-4 h-full text-xs font-bold text-green-600 hover:bg-green-50 transition-colors disabled:opacity-50"
+            className="rounded border border-green-600 px-4 h-full text-xs font-bold text-green-600 hover:bg-green-50 transition-colors"
           >
-            {isProcessing && pendingAction === "increment"
-              ? "ADDING..."
-              : "ADD"}
+            ADD
           </button>
         ) : (
           <div className="flex items-center border border-green-600 rounded overflow-hidden h-full bg-white">
             <button
               onClick={() => handleActionClick("decrement")}
-              disabled={isProcessing}
-              className="px-2 h-full flex items-center justify-center text-green-600 hover:bg-green-50 transition-colors disabled:opacity-40"
+              className="px-2 h-full flex items-center justify-center text-green-600 hover:bg-green-50 transition-colors"
               aria-label="Decrease quantity"
             >
               <Minus size={13} strokeWidth={3} />
@@ -82,8 +64,7 @@ export default function AddToCartButton({ productId }: { productId: number }) {
 
             <button
               onClick={() => handleActionClick("increment")}
-              disabled={isProcessing}
-              className="px-2 h-full flex items-center justify-center text-green-600 hover:bg-green-50 transition-colors disabled:opacity-40"
+              className="px-2 h-full flex items-center justify-center text-green-600 hover:bg-green-50 transition-colors"
               aria-label="Increase quantity"
             >
               <Plus size={13} strokeWidth={3} />

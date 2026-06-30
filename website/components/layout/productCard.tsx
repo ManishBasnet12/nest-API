@@ -59,7 +59,16 @@ export default function ProductCard({ product }: ProductCardProps) {
             {formatPrice(product.price)}
           </span>
           
-          <AddToCartButton productId={product.id} />
+          <AddToCartButton 
+          product={{
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.imageUrl,
+            mrp: product.price, // Assuming MRP is the same as price for now
+            category: product.category || "",
+          }}
+          />
         </div>
       </div>
     </div>

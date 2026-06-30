@@ -8,8 +8,8 @@ import { useEffect, useState } from "react";
 
 export default function CartIcon() {
   const [mounted, setMounted] = useState(false);
-  const itemCount = useCartStore((state) => state.itemCount);
-  
+  const itemCount = useCartStore((state) => state.totalItems());
+
   useEffect(() => {
     setMounted(true);
   }, []);

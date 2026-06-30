@@ -9,6 +9,8 @@ import {
 } from "../../services/product.service";
 import AddToCartButton from "../../components/ui/AddToCartButton";
 import Link from "next/link";
+import { View } from "lucide-react";
+import ViewCartBar from "@/components/layout/cartbar";
 
 function SearchContent() {
   const searchParams = useSearchParams();
@@ -38,7 +40,7 @@ function SearchContent() {
         if (currentQuery.trim() === "") {
           const rawProducts = await getProducts();
           setProducts(rawProducts);
-          setHasMore(false);
+          setHasMore(true);
         } else {
           const data = await searchProducts({ q: currentQuery, page: 1 });
           setProducts(data.products);
@@ -177,7 +179,21 @@ function SearchContent() {
                       >
                         ${product.price}
                       </span>
-                      <AddToCartButton productId={Number(product.id)} />
+                      <div
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                      >
+                        <AddToCartButton
+                          product={{
+                            id: Number(product.id),
+                            name: product.name,
+                            price: product.price,
+                            image: product.imageUrl,
+                          }}
+                        />{" "}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -211,6 +227,7 @@ function SearchContent() {
           </p>
         )}
       </div>
+      <ViewCartBar />
     </div>
   );
 }

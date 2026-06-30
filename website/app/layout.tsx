@@ -5,6 +5,8 @@ import Navbar from "../components/layout/navbar";
 import Footer from "../components/layout/footer";
 import Providers from "./providers";
 import { Suspense } from "react";
+import { ChartBar } from "lucide-react";
+import ViewCartBar from "@/components/layout/cartbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

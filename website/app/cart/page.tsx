@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,32 +16,13 @@ import {
   Headphones,
 } from "lucide-react";
 import { useCartStore } from "../../hooks/useCartStore";
-import { getToken, getUser, clearAuthSession } from "../../services/auth.service";
+import { getToken, getUser } from "../../services/auth.service";
 
 interface StoredUser {
   id: number;
   name: string;
   email: string;
   role: string;
-}
-
-function LoadingSkeleton() {
-  return (
-    <main className="min-h-[70vh] flex flex-col items-center justify-center gap-4 bg-stone-50">
-      <div className="flex gap-1.5">
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            className="w-2 h-2 rounded-full bg-amber-500 animate-bounce"
-            style={{ animationDelay: `${i * 0.15}s` }}
-          />
-        ))}
-      </div>
-      <p className="text-xs tracking-widest uppercase text-stone-400">
-        Loading your cart…
-      </p>
-    </main>
-  );
 }
 
 function EmptyCart() {
@@ -92,52 +73,37 @@ function SummaryRow({
 
 export default function CartPage() {
   const router = useRouter();
-  const { items, addItem, removeItem, totalPrice, totalItems, fetchCart } = useCartStore();
+  const { items, addItem, removeItem, totalPrice, totalItems, hasHydrated } =
+    useCartStore();
 
   const [user, setUser] = useState<StoredUser | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [coupon, setCoupon] = useState("");
 
   useEffect(() => {
     setMounted(true);
-    const checkAuthAndLoad = async () => {
+    const checkAuth = () => {
       const token = getToken();
       const stored = getUser();
       if (!token || !stored) {
         router.push("/");
         return;
       }
-      try {
-        setUser(stored);
-        if (fetchCart) await fetchCart();
-      } catch {
-        clearAuthSession();
-        router.push("/");
-      } finally {
-        setLoading(false);
-      }
+      setUser(stored);
     };
-    checkAuthAndLoad();
-    window.addEventListener("auth_change", checkAuthAndLoad);
-    return () => window.removeEventListener("auth_change", checkAuthAndLoad);
-  }, [router, fetchCart]);
+    checkAuth();
+    window.addEventListener("auth_change", checkAuth);
+    return () => window.removeEventListener("auth_change", checkAuth);
+  }, [router]);
 
-  const cartCalculations = useMemo(() => {
-    const subtotal = typeof totalPrice === "function" ? totalPrice() : 0;
-    const count = typeof totalItems === "function" ? totalItems() : items.length;
-    const shipping = subtotal > 1000 || subtotal === 0 ? 0 : 99;
-    const total = subtotal + shipping;
-    const shippingProgress = Math.min((subtotal / 1000) * 100, 100);
-
-    return { subtotal, count, shipping, total, shippingProgress };
-  }, [items, totalPrice, totalItems]);
-
-  if (!mounted || !user) return null;
-  if (loading) return <LoadingSkeleton />;
+  if (!mounted || !user || !hasHydrated) return null;
   if (items.length === 0) return <EmptyCart />;
 
-  const { subtotal, count, shipping, total, shippingProgress } = cartCalculations;
+  const subtotal = totalPrice();
+  const count = totalItems();
+  const shipping = subtotal > 1000 || subtotal === 0 ? 0 : 99;
+  const total = subtotal + shipping;
+  const shippingProgress = Math.min((subtotal / 1000) * 100, 100);
 
   return (
     <main className="min-h-screen bg-stone-50">
@@ -190,9 +156,9 @@ export default function CartPage() {
                       <p className="truncate text-sm font-medium text-stone-800 leading-snug">
                         {item.product.name}
                       </p>
-                      {(item.product as any).category && (
+                      {item.product.category && (
                         <p className="mt-0.5 text-[11px] text-stone-400">
-                          {(item.product as any).category}
+                          {item.product.category}
                         </p>
                       )}
                       <p className="mt-1 text-[13px] text-stone-500 sm:hidden">
@@ -209,7 +175,7 @@ export default function CartPage() {
                     <button
                       onClick={() => {
                         if (item.quantity > 1) {
-                          addItem(item.productId, -1);
+                          addItem(item.product, -1);
                         } else {
                           removeItem(item.productId);
                         }
@@ -225,7 +191,7 @@ export default function CartPage() {
                     </span>
 
                     <button
-                      onClick={() => addItem(item.productId, 1)}
+                      onClick={() => addItem(item.product, 1)}
                       className="flex h-8 w-8 items-center justify-center text-stone-400 hover:bg-amber-50 hover:text-amber-600 transition-colors duration-150"
                       aria-label="Increase quantity"
                     >
@@ -279,10 +245,7 @@ export default function CartPage() {
             </h2>
 
             <div className="flex flex-col gap-3 mb-5">
-              <SummaryRow
-                label="Subtotal"
-                value={`₹${subtotal.toLocaleString()}`}
-              />
+              <SummaryRow label="Subtotal" value={`₹${subtotal.toLocaleString()}`} />
               <SummaryRow
                 label="Shipping"
                 value={shipping === 0 ? "Free" : `₹${shipping}`}
@@ -294,11 +257,7 @@ export default function CartPage() {
                 </p>
               )}
               <div className="border-t border-white/10 pt-3">
-                <SummaryRow
-                  label="Total"
-                  value={`₹${total.toLocaleString()}`}
-                  bold
-                />
+                <SummaryRow label="Total" value={`₹${total.toLocaleString()}`} bold />
               </div>
             </div>
 
@@ -332,10 +291,7 @@ export default function CartPage() {
                 { icon: <RotateCcw size={13} />, label: "Easy returns" },
                 { icon: <Headphones size={13} />, label: "24/7 support" },
               ].map(({ icon, label }) => (
-                <div
-                  key={label}
-                  className="flex flex-col items-center gap-1.5 text-white/30"
-                >
+                <div key={label} className="flex flex-col items-center gap-1.5 text-white/30">
                   {icon}
                   <span className="text-[10px] tracking-wide">{label}</span>
                 </div>
