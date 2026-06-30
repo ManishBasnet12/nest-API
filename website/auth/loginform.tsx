@@ -12,7 +12,6 @@ import {
   ErrorBanner,
   SwitchText,
 } from "./auth-ui";
-import { useCartStore } from "../hooks/useCartStore";
 import { loginUser, persistAuthSession } from "../services/auth.service";
 
 interface LoginFormProps {
@@ -24,15 +23,10 @@ const LoginForm = ({ onSwitchToRegister, onSuccess }: LoginFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const fetchCart = useCartStore((s) => s.fetchCart);
-  const syncLocalCart = useCartStore((s) => s.syncLocalCart);
-
   const { mutate, isPending, error } = useMutation({
     mutationFn: loginUser,
     onSuccess: async (data) => {
       persistAuthSession(data);
-      await syncLocalCart();
-      await fetchCart();
       window.dispatchEvent(new Event("auth_change"));
       onSuccess();
     },
