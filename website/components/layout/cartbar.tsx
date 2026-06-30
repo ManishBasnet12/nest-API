@@ -21,13 +21,13 @@ export default function ViewCartBar() {
   const previewItems = items.slice(0, 3);
 
   return (
-    <div className="fixed bottom-5 left-1/2 z-50  w-[200px] -translate-x-1/2 sm:bottom-8">
+    <div className="fixed bottom-5 left-1/2 z-50  w-[250px] -translate-x-1/2 sm:bottom-8">
       <Link
         href="/cart"
         className="flex items-center justify-between rounded-full bg-amber-500 px-3 py-2.5 shadow-2xl shadow-amber-900/30 transition-transform active:scale-[0.98]"
       >
-        <div className="flex items-center gap-3">
-          <div className="flex -space-x-3">
+        <div className="flex items-center gap-3 w-43 justify-between">
+          <div className="flex -space-x-5">
             {previewItems.map((item) => (
               <div
                 key={item.productId}
